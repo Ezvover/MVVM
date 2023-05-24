@@ -15,6 +15,7 @@
                 <DataTemplate>
                     <Border BorderBrush="Bisque" BorderThickness="1" Margin="10">
                         <StackPanel Margin="10">
+                            <TextBlock Text="{Binding Id}" FontWeight="Bold"/>
                             <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
                             <TextBlock Text="{Binding Author}" />
                             <StackPanel Orientation="Horizontal">
@@ -39,10 +40,10 @@
                     <Border BorderBrush="Bisque" BorderThickness="1" Margin="10">
                         <StackPanel Margin="10">
                             <TextBlock Text="Название:" />
-                            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
+                            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" IsReadOnly="True" />
 
                             <TextBlock Text="Автор:"/>
-                            <TextBox Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
+                            <TextBox Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" IsReadOnly="True" />
 
                             <StackPanel Orientation="Horizontal">
                                 <Button Content="Записаться" Command="{Binding GiveItemCommand}" Margin="10,0" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Windows;
 using SampleMVVM.Models;
@@ -17,12 +18,31 @@ namespace SampleMVVM
     {
         private void OnStartup(object sender, StartupEventArgs e)
         {
-            List<Course> books = new List<Course>()
+            string connectionString = @"Data Source=.;Initial Catalog=Courses;Integrated Security=True";
+            string query = "SELECT id, name, hours, author, amount FROM Course";
+            List<Course> books = new List<Course>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                new Course("ООП", 56,"Johny ", 3),
-                new Course("ОАиП", 72,"John", 2),
-                new Course("БД", 56, "Sergei", 2)
-            };
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Course course = new Course();
+                            course.Id = Convert.ToInt32(reader["id"]);
+                            course.Name = reader["name"].ToString();
+                            course.Hours = Convert.ToInt32(reader["hours"]);
+                            course.Author = reader["author"].ToString();
+                            course.Amount = Convert.ToInt32(reader["amount"]);
+
+                            books.Add(course);
+                        }
+                    }
+                }
+            }
 
             MainView view = new MainView(); // создали View
             MainViewModel viewModel = new ViewModels.MainViewModel(books); // Создали ViewModel

@@ -5,6 +5,7 @@ using System.Text;
 using SampleMVVM.Models;
 using SampleMVVM.Commands;
 using System.Windows.Input;
+using System.Data.SqlClient;
 
 namespace SampleMVVM.ViewModels
 {
@@ -15,6 +16,16 @@ namespace SampleMVVM.ViewModels
         public CourseViewModel(Course Course)
         {
             this.Course = Course;
+        }
+
+        public int Id
+        {
+            get { return Course.Id; }
+            set
+            {
+                Course.Id = value;
+                OnPropertyChanged("Id");
+            }
         }
 
         public string Name
@@ -57,6 +68,22 @@ namespace SampleMVVM.ViewModels
             }
         }
 
+        public void Update()
+        {
+            string connectionString = @"Data Source=.;Initial Catalog=Courses;Integrated Security=True";
+            string updateQuery = $"UPDATE Course SET amount = {Amount} WHERE id = {Id}";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(updateQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@amount", Amount);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
         #region Commands
 
         #region Забрать
@@ -78,6 +105,7 @@ namespace SampleMVVM.ViewModels
         private void GetItem()
         {
             Amount++;
+            Update();
         }
 
         #endregion
@@ -101,6 +129,7 @@ namespace SampleMVVM.ViewModels
         private void GiveItem()
         {
             Amount--;
+            Update();
         }
 
         private bool CanGiveItem()
